@@ -69,6 +69,15 @@ function processFormData() {
         response.defaults.push( { name: $item.attr("name"), value: $item.val() } )
       })
 
+  $('form').filter('[name="description"]')
+      .find('.form-control[type="description"]')
+      .filter(function(i,e){
+        return $(e).val() !== ""
+      }).each(function(i,e){
+        var $item = $(e)
+        response.description = $item.val();
+      })
+
   console.log("Response!!", response)
   $('input[name="response"]').val(JSON.stringify(response))
 }

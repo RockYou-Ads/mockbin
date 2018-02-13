@@ -8,7 +8,15 @@ block content
         div.row.col-sm-16
           div(id="conditionals")
             div(style="display:inline-block")
+
+              form(name='description')
+                h4 Description
+
+                div.form-group
+                  input.form-control(type='description',name='description',data-type='default',placeholder='Please enter a description for bin', required='')
+
               h4 Conditionals
+
               form.form-inline.block(name="conditional",data-type="conditional",style="display:inline-block")
                 div.form-group.pair
                   //  Row 1 field {drop,opt:key} match {op,expression}
