@@ -17,7 +17,7 @@ block content
                 h4 Description
 
                 div.form-group
-                  input.form-control(type='description',name='description',value="#{description}",placeholder='Please enter a description for bin', required='')
+                  input.form-control(type='text',name='description',value="#{description}",placeholder='Please enter a description for bin', required='')
 
               h4 Conditionals
 
@@ -62,14 +62,41 @@ block content
       div.panel-footer
         div.row
           div.col-sm-4
-          div.col-sm-6
+          div.col-sm-5
+
+          form(name='lock-status')
+            div.form-group.col-sm-1
+              input.form-control(type='hidden', name='locked', value='#{entry.locked}')
+              button(type='button', id='locked').lock-status.btn.btn-group
+                if entry.locked == 'true'
+                  i.fa.fa-lock
+                else
+                  i.fa.fa-unlock-alt
 
           div.col-sm-2
             form(method="POST", action="/conditional/#{data.raw.bin.id}/edit", uuid="#{data.raw.bin.id}", id="update-conditional")
               input(type='hidden', name='response', value='')
               button(type='submit').btn.btn-primary.btn-block Update Conditional
 
+      div.modal.fade.in(role='dialog',id='locked_warning')
+        div.modal-dialog
+          div.modal-content
+            div.modal-header
+              h3.modal-title
+                strong Are you sure you want to edit?
+            div.modal-body.text-center
+              h2.text-danger
+                strong Locked!
+              div &nbsp;
+              h4 Changing can break tests using this mock!
+            div.modal-footer
+              div.col-sm-6.text-left
+                button(type='button', id='warning-edit').btn.btn-danger Edit
+              div.col-sm-6.text.right
+                button(type='button', id='warning-cancel').btn.btn-primary Cancel
+
 block scripts
   // need logic for packaging up and sending
   // need logic for adding/removing conditionals with +/- buttons
   script(type='text/javascript', src='/static/conditional/create.js')
+  script(type='text/javascript', src='/static/conditional/edit.js')

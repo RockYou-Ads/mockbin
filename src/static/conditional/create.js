@@ -69,14 +69,18 @@ function processFormData() {
         response.defaults.push( { name: $item.attr("name"), value: $item.val() } )
       })
 
-  $('form').filter('[name="description"]')
-      .find('.form-control[type="description"]')
-      .filter(function(i,e){
-        return $(e).val() !== ""
-      }).each(function(i,e){
+  var simple = [ // Simple assignments  name=key, val()=value, evaluator
+    { selector : '[name="description"] .form-control[name="description"]', parent: response },
+    { selector : '[name="lock-status"] .form-control[name="locked"]', parent: response }
+  ]
+  simple.forEach(function(info){
+    $(info.selector)
+      .filter((i,e) => ( $(e).val() !== ""))
+      .each(function(i,e){
         var $item = $(e)
-        response.description = $item.val();
+        info.parent[$item.attr('name')] = info.eval && info.eval($item.val()) || $item.val();
       })
+  })
 
   console.log("Response!!", response)
   $('input[name="response"]').val(JSON.stringify(response))
