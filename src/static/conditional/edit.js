@@ -17,7 +17,7 @@ $(function () {
   })
 
   $('#warning-cancel').on('click', function () {
-    window.location = '/conditional/' + $('#update-bin').attr('uuid') + '/view'
+    window.location = '/conditional/' + $('#update-conditional').attr('uuid') + '/view'
   })
 
   $('i.fa.fa-edit').on('click', function () {
