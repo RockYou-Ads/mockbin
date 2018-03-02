@@ -13,7 +13,7 @@ block content
                 h4 Description
 
                 div.form-group
-                  input.form-control(type='description',name='description',placeholder='Please enter a description for bin', required='')
+                  input.form-control(type='text',name='description',placeholder='Please enter a description for bin', required='')
 
               h4 Conditionals
 
@@ -21,18 +21,17 @@ block content
                 div.form-group.pair
                   //  Row 1 field {drop,opt:key} match {op,expression}
                   div.input-group-inline.multi
-                      select.form-control.field-source
-                        - var required = false
-                        for item in [{ text:'header', required:true }, { text:'cookie',required:true }, 'body','full url','protocol','domain','url path','port','request type', { text:'parameter', required:true }]
-                          - var val = item.val||item.text||item
-                          - required = reqired || (val==field.type? item.required : false )
-                          option(value=val,selected=(val==field.type),required=item.required&&'true'||false) #{item.text||item}
-                      input.form-control.field-key(type='text', name='field', value="#{field.key}", placeholder='field', disabled=required&&'true'||false )
+                    select.form-control.field-source
+                      for item in [{ text:'header', required:true }, { text:'cookie',required:true }, 'body','full url','protocol','domain','url path','port','request type', { text:'parameter', required:true }]
+                        - var val = item.val||item.text||item
+                        option(value=val,required=item.required&&'true'||false) #{item.text||item}
+                    input.form-control.field-key(type='text', name='field', placeholder='field')
 
                     select.form-control.match-operation
                       for item in ['regex','contains','starts with','ends with','exact','less than','greater than','one of']
                         option(value=item.val||item.text||item) #{item.text||item}
-                      input.form-control(type='text', name='expression', placeholder='expression', required='true', size="90%")
+                      input.form-check-input(type='checkbox')
+                      input.form-control(type='text', name='expression', placeholder='expression', size="87%")
 
                   //  Row 2, needs to use col-xs-## or something similar
                   div.input-group.multi
@@ -43,7 +42,7 @@ block content
                   button(type='button', tabindex='-1',style="display:block").btn.btn-success: i.glyphicon.glyphicon-plus
                   button(type='button', tabindex='-1',style="display:block").btn.btn-danger: i.glyphicon.glyphicon-remove
                 p
-                br
+              p
 
           form.form-inline(name='default',data-type="default")
             div.form-group
@@ -62,7 +61,7 @@ block content
               button(type='submit').btn.btn-primary.btn-block Create Conditional
 
 block scripts
-  // script(type='text/javascript', src='/static/bin/create.js')
+
   // need logic for packaging up and sending
   // need logic for adding/removing conditionals with +/- buttons
   script(type='text/javascript', src='/static/conditional/create.js')

@@ -61,6 +61,7 @@ function processFormData() {
             },
             match : {
               type:$elem.find('select:last-of-type').val(),
+              negate: $elem.find('[type="checkbox"]')[0].checked,
               expression: $elem.find('[name="expression"]').val()
             },
             targetUrl : $elem.find('[name="targetUrl"]').val()
