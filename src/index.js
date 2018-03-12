@@ -39,7 +39,7 @@ module.exports = function (options, done) {
   // magic starts here
   app.use('/', router(options))
 
-  app.listen(options.port,'0.0.0.0')
+  app.listen(options.port, '0.0.0.0')
 
   if (typeof done === 'function') {
     done()

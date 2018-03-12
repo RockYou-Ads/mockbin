@@ -51,10 +51,11 @@
     "delay": "1000"
   },
   "scripts": {
+    "fix": "standard --fix",
     "start": "node bin/mockbin",
     "develop": "nodemon bin/mockbin",
     "test": "mocha --recursive",
-    "pretest": "standard && echint",
+    "pretest": "standard --verbose && echint",
     "coverage": "istanbul cover --dir coverage _mocha -- --recursive --fgrep 'Request Validation' --invert --reporter dot",
     "codeclimate": "codeclimate-test-reporter < coverage/lcov.info",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
