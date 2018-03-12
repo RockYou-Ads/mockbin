@@ -4,9 +4,16 @@ function cloneConditionalBlock() {
   var $this = $(this)
   var $parent = $this.parent().parent()
   var $block = $parent.clone(true)
+  var $selects = $block.find('select')
 
   // reset defaults
+  $selects.each(function(i,e){
+    var $e = $(e)
+    $e.val( $e.children('option:first').val() )
+  })
   $block.find('input').val("")
+  //$block.find('select.form-control')
+  //       .on('change', updateInputState)
 
   $parent.after( $block )
 }
@@ -35,15 +42,15 @@ function processFormData() {
         var $elem = $(e).find('.input-group,.input-group-inline'),
             max = 0
         // validate the fields
-        var $notEligible = $elem.find('[name="field"],[name="expression"],[name="targetUrl"]')
-             .filter(function(i,e){ max = i; return $(e).val() === "" })
+        var $notEligible = $elem.find('[name="field"]:not([disabled]),[name="expression"],[name="targetUrl"]')
+             .filter((i,e) => { max=i; return $(e).val() === "" })
         if( max > 0 && $notEligible.length > 0 ) {
           // error, fields are missing values
           var keys = []
-          $notEligible.each( function(i,e) {
+          $notEligible.each(function(i,e) {
             keys.push( $(e).attr('name') )
           })
-          console.log("Error: Stuff is missing!", max, keys)
+          console.log("Error: Stuff is missing!", max, $(e).attr('name'), keys)
           return;
         }
         // field {name,value?}, match {type,value}, target {url}
@@ -54,6 +61,7 @@ function processFormData() {
             },
             match : {
               type:$elem.find('select:last-of-type').val(),
+              negate: $elem.find('[type="checkbox"]')[0].checked,
               expression: $elem.find('[name="expression"]').val()
             },
             targetUrl : $elem.find('[name="targetUrl"]').val()
@@ -97,8 +105,24 @@ function delayProcessFormData() {
   delayPFDTimer = setTimeout( processFormData.bind(this, arguments), 100)
 }
 
+function updateInputState(event) {
+  // console.log( this, e )
+  var $e = $(this)
+      $sel = $e.children(":selected")
+  if( $sel.attr('required') ) {
+    $e.next().removeAttr('disabled')
+  } else {
+    $e.next().attr('disabled',true)
+  }
+}
+
+$('form').on('change', 'select.form-control.field-source', updateInputState)
 $('form').on('keyup keypress change blur', '.form-control', delayProcessFormData)
 $('form').on('click', '[type!="submit"].btn', delayProcessFormData)
+
+$('select.form-control.field-source').each(function(i,e){
+  updateInputState.call(e)
+})
 
 $(document).ready(function() {
   processFormData()
