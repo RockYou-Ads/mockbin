@@ -1,0 +1,28 @@
+extends ../layout.jade
+
+block content
+  div(data-page="bin/view").container
+    div.row
+      div.col-sm-9
+        h3 Conditional Identifier: #[code= req.params.uuid]
+
+        div#preview
+          pre: code= data.json
+
+      div.col-sm-3
+        h3 Next Steps
+
+        a(href= '#apiembed').btn.btn-block.btn-primary #[span.badge 1] &nbsp; Send Some Requests
+        a(href= '/conditional/' + req.params.uuid).btn.btn-block.btn-primary #[span.badge 2] &nbsp; Visit in Browser
+        a(href= '/conditional/' + req.params.uuid + '/log').btn.btn-block.btn-primary #[span.badge 3] &nbsp; View History
+
+    br
+
+block scripts
+  script(type='text/javascript').
+    $(function() {
+      // highlight the code
+      $('pre code').each(function (i, block) {
+        hljs.highlightBlock(block);
+      });
+    });

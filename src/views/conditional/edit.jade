@@ -1,0 +1,103 @@
+extends ../layout.jade
+
+block content
+  div(data-page="conditional/edit").container
+    - var entry = data.raw.bin.entry
+    - var description = data.raw.bin.entry.description
+    - var conditionals = Array.isArray(entry.conditionals) && entry.conditionals.length > 0 ? entry.conditionals : [{ 'name': '', 'value': '' }]
+    - var defaults = Array.isArray(entry.defaults) && entry.defaults.length > 0 ? entry.defaults : [{ 'name': '', 'value': '' }]
+    div.panel.panel-default
+      div.panel-heading: h4 Conditional Builder
+      div.panel-body
+        div.row.col-sm-16
+          div(id="conditionals")
+            div(style="display:inline-block")
+
+              form(name='description')
+                h4 Description
+
+                div.form-group
+                  input.form-control(type='text',name='description',value="#{description}",placeholder='Please enter a description for bin', required='')
+
+              h4 Conditionals
+
+              for condition in conditionals
+                - var field = condition.field // { type, key }
+                - var match = condition.match // { type, expression }
+                - var target = condition.targetUrl
+
+                form.form-inline.block(name="conditional",data-type="conditional",style="display:inline-block")
+                  div.form-group.pair
+                    //  Row 1 field {drop,opt:key} match {op,expression}
+                    div.input-group-inline.multi
+                      select.form-control.field-source
+                        for item in [{ text:'header', required:true }, { text:'cookie',required:true }, 'body','full url','protocol','domain','url path','port','request type', { text:'parameter', required:true }]
+                          - var val = item.val||item.text||item
+                          option(value=val,selected=(val==field.type),required=item.required&&'true'||false) #{item.text||item}
+                      input.form-control.field-key(type='text', name='field', value="#{field.key}", placeholder='field')
+
+                      select.form-control.match-operation
+                        for item in ['regex','contains','starts with','ends with','exact','less than','greater than','one of']
+                          - var val = item.val||item.text||item
+                          option(value=val,selected=(val==match.type)) #{item.text||item}
+                        input.form-check-input(type='checkbox',checked=match.negate)
+                        input.form-control(type='text', name='expression', value='#{match.expression}',placeholder='expression', size="87%")
+
+                    //  Row 2, needs to use col-xs-## or something similar
+                    div.input-group.multi
+                      span.input-group-addon Target Url
+                      input.form-control(id="targetUrl", type='text', name='targetUrl', value='#{target}',placeholder='target url', title="Target url should be a relative path to the bin or conditional that should be loaded.  Please do not add the protocol or domain", required='', size="131%")
+
+                  span.input-group-btn(style="display:inline-block")
+                    button(type='button', tabindex='-1',style="display:block").btn.btn-success: i.glyphicon.glyphicon-plus
+                    button(type='button', tabindex='-1',style="display:block").btn.btn-danger: i.glyphicon.glyphicon-remove
+                  p
+                p
+
+          form.form-inline(name='default',data-type="default")
+            div.form-group
+              div.input-group.multi
+                span.input-group-addon Default
+                input.form-control(type='text', name='targetUrl', value='#{defaults[0].value}', placeholder='target url',required='',size="100%")
+
+      div.panel-footer
+        div.row
+          div.col-sm-4
+          div.col-sm-5
+
+          form(name='lock-status')
+            div.form-group.col-sm-1(style='margin-bottom:0px')
+              input.form-control(type='hidden', name='locked', value='#{entry.locked}')
+              button(type='button', id='locked').lock-status.btn.btn-group
+                if entry.locked == 'true'
+                  i.fa.fa-lock
+                else
+                  i.fa.fa-unlock-alt
+
+          div.col-sm-2
+            form(method="POST", action="/conditional/#{data.raw.bin.id}/edit", uuid="#{data.raw.bin.id}", id="update-conditional")
+              input(type='hidden', name='response', value='')
+              button(type='submit').btn.btn-primary.btn-block Update Conditional
+
+      div.modal.fade.in(role='dialog',id='locked_warning')
+        div.modal-dialog
+          div.modal-content
+            div.modal-header
+              h3.modal-title
+                strong Are you sure you want to edit?
+            div.modal-body.text-center
+              h2.text-danger
+                strong Locked!
+              div &nbsp;
+              h4 Changing can break tests using this mock!
+            div.modal-footer
+              div.col-sm-6.text-left
+                button(type='button', id='warning-edit').btn.btn-danger Edit
+              div.col-sm-6.text.right
+                button(type='button', id='warning-cancel').btn.btn-primary Cancel
+
+block scripts
+  // need logic for packaging up and sending
+  // need logic for adding/removing conditionals with +/- buttons
+  script(type='text/javascript', src='/static/conditional/create.js')
+  script(type='text/javascript', src='/static/conditional/edit.js')
